@@ -1,6 +1,7 @@
 package com.sg.FlooringMastery.UI;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public interface UserIO {
     void print(String msg);
@@ -24,4 +25,6 @@ public interface UserIO {
     String readString(String prompt);
 
     BigDecimal readBigDecimal(String Prompt);
+
+    LocalDate readLocalDate(String prompt);
 }
