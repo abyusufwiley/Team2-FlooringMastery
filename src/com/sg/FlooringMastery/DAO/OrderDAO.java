@@ -13,7 +13,7 @@ public interface OrderDAO {
 
     OrderDTO addOrder(OrderDTO order) throws OrderDAOException;
 
-    OrderDTO editOrder(int orderId, String name) throws OrderDAOException;
+    OrderDTO editOrder(OrderDTO order) throws OrderDAOException;
 
     OrderDTO removeOrder(int orderId, LocalDate date) throws OrderDAOException;
 
