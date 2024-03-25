@@ -18,24 +18,9 @@ public class OrderDAOImpl implements OrderDAO{
     private final String DELIMITER = ",";
     private Map<Integer, OrderDTO> orders = new HashMap<>();
 
-    /*
-     * user creates an order
-     * check if that day file exists
-     * if it does, load the file
-     * add the order to the file
-     * save the file
-     * 
-     * 
-     * if the file doesn't exist, create a new file of that day
-     * add the order to the file
-     * save the file
-     * 
-     * 
-     */
 
     
-    public OrderDAOImpl(){
-        //ORDER_FILE = "Orders\\Orders.txt";       
+    public OrderDAOImpl(){      
     }
 
     public OrderDAOImpl(String orderTextFile){
@@ -49,7 +34,7 @@ public class OrderDAOImpl implements OrderDAO{
 
 
     @Override
-    public OrderDTO getOrder(int orderId, String name) throws OrderDAOException {
+    public OrderDTO getOrder(int orderId, LocalDate date) throws OrderDAOException {
         //get order by order id and name
         String orderFile = buildFilename(LocalDate.now());
         loadOrder(orderFile);
@@ -71,7 +56,6 @@ public class OrderDAOImpl implements OrderDAO{
         }
 
         try {
-            //LocalDate date = LocalDate.now();
             out = new PrintWriter(new FileWriter(orderFile));
         } catch (IOException e) {
             throw new OrderDAOException("Could not save order data.", e);
@@ -151,26 +135,6 @@ public class OrderDAOImpl implements OrderDAO{
         return orderAsText;
     }
 
-    // private void writeOrder() throws OrderDAOException{
-    //     PrintWriter out;
-
-    //     try {
-    //         out = new PrintWriter(new FileWriter(ORDER_FILE));
-    //     } catch (IOException e) {
-    //         throw new OrderDAOException("Could not save order data.", e);
-    //     }
-
-    //     String orderAsText;
-    //     List<OrderDTO> orderList = this.getAllOrders();
-    //     for (OrderDTO currentOrder : orderList){
-    //         orderAsText = marshallItem(currentOrder);
-    //         out.println(orderAsText);
-    //         out.flush();
-    //     }
-    //     out.close();
-    // }
-
-
 
     @Override
     public List<OrderDTO> getAllOrders() throws OrderDAOException {
@@ -189,40 +153,32 @@ public class OrderDAOImpl implements OrderDAO{
     }
 
     @Override
-    public OrderDTO editOrder(OrderDTO order) throws OrderDAOException {
-        //loadOrder();
+    public OrderDTO editOrder(OrderDTO order, LocalDate date) throws OrderDAOException {
+        String orderFile = buildFilename(date);
+        loadOrder(orderFile);
         orders.put(order.getOrderNumber(), order);
-        //writeOrder();
+        writeOrder(orderFile);
         return order;
     }
 
     @Override
     public OrderDTO removeOrder(int orderId, LocalDate date) throws OrderDAOException {
-        //loadOrder();
         OrderDTO order = orders.remove(orderId);
-        //writeOrder();
         return order;
     }
 
     @Override
     public void exportAllData() throws OrderDAOException {
-        // Load all the current orders from a file into memory
-        //loadOrder();
-        // Declare a PrintWriter object to write formatted data to an output stream
+        
         PrintWriter out;
         try {
-            // Initialize the PrintWriter object with a FileWriter for the file "DataExport.txt"
-            // If the file doesn't exist, FileWriter will create it
             out = new PrintWriter(new FileWriter("DataExport.txt"));
         } catch (IOException e) {
             throw new OrderDAOException("Could not save order data.", e);
         }
 
-        // Declare a string to hold the order data as text
         String orderAsText;
-        // Retrieve all the orders that were loaded by the loadOrder() method
         List<OrderDTO> orderList = this.getAllOrders();
-        // Iterate over each order in the order list
         for (OrderDTO currentOrder : orderList){
             orderAsText = marshallItem(currentOrder);
             out.println(orderAsText);
@@ -231,5 +187,11 @@ public class OrderDAOImpl implements OrderDAO{
         out.close();
 
      }
+
+     private LocalDate getDateFromFilename(String filename){
+        String date = filename.substring(7, 17);
+        return LocalDate.parse(date);
+    }
+
 
 }

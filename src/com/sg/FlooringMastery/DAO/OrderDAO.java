@@ -6,14 +6,14 @@ import java.util.List;
 import com.sg.FlooringMastery.DTO.OrderDTO;
 
 public interface OrderDAO {
-    OrderDTO getOrder(int orderId, String name) throws OrderDAOException;
+    OrderDTO getOrder(int orderId, LocalDate date) throws OrderDAOException;
 
     List<OrderDTO> getAllOrders() throws OrderDAOException;
 
 
     OrderDTO addOrder(OrderDTO order) throws OrderDAOException;
 
-    OrderDTO editOrder(OrderDTO order) throws OrderDAOException;
+    OrderDTO editOrder(OrderDTO order, LocalDate date) throws OrderDAOException;
 
     OrderDTO removeOrder(int orderId, LocalDate date) throws OrderDAOException;
 

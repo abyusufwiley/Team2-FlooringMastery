@@ -24,9 +24,9 @@ public class ServiceLayerImpl implements ServiceLayer{
     }
 
     @Override
-    public OrderDTO getOrder(int orderNumber, String name) throws OrderDAOException{
+    public OrderDTO getOrder(int orderNumber, LocalDate date) throws OrderDAOException{
         //get order by order id and name
-            return orderDAO.getOrder(orderNumber, name);
+            return orderDAO.getOrder(orderNumber, date);
       
     }
 
@@ -82,14 +82,17 @@ public class ServiceLayerImpl implements ServiceLayer{
         }
     }
 
+    //method to validate date input with the file name
+    
+
     private boolean validateState(String state){
         return taxDAO.getTax(state) != null;
     }
 
     @Override
-    public OrderDTO editOrder(OrderDTO order) throws OrderDAOException{
+    public OrderDTO editOrder(OrderDTO order, LocalDate date) throws OrderDAOException{
         validateOrderData(order);
-        return orderDAO.editOrder(order);
+        return orderDAO.editOrder(order, date) ;
     }
 
     @Override

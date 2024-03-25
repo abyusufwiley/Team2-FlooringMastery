@@ -1,5 +1,6 @@
 package com.sg.FlooringMastery.Controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.sg.FlooringMastery.DAO.OrderDAOException;
@@ -75,18 +76,19 @@ public class Controller {
     private void editOrder() throws OrderDAOException {
         view.editOrderBanner();
         int orderId = view.getOrderNumber();
-        String name = view.getCustomerName();
-        OrderDTO order = orderService.getOrder(orderId, name);
+        LocalDate date = view.getDate();
+        OrderDTO order = orderService.getOrder(orderId, date);
         OrderDTO editedOrder = view.editOrderInfo(order);
-        orderService.editOrder(editedOrder);
+        orderService.editOrder(editedOrder, date);
         view.displayOrdersBanner();
     }
+
 
     private void removeOrder() throws OrderDAOException {
         view.removeOrderBanner();
         int orderId = view.getOrderNumber();
-        String name = view.getCustomerName();
-        OrderDTO order = orderService.getOrder(orderId, name);
+        LocalDate date = view.getDate();
+        OrderDTO order = orderService.getOrder(orderId, date);
         orderService.removeOrder(orderId, order.getDate());
         view.displayOrdersBanner();
     }

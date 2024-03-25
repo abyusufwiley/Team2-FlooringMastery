@@ -1,6 +1,7 @@
 package com.sg.FlooringMastery.UI;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import com.sg.FlooringMastery.DTO.OrderDTO;
@@ -125,8 +126,9 @@ public class View {
         return io.readInt("Please enter Order Number");
     }
 
-    public String getCustomerName() {
-        return io.readString("Please enter Customer Name");
+    public LocalDate getDate() {
+        String userDateInput =  io.readString("Please enter Date in the format YYYY-MM-DD");
+        return LocalDate.parse(userDateInput);
     }
 
     public void displayOrder(OrderDTO order) {
@@ -184,7 +186,6 @@ public class View {
     public void displayUnknownOrderBanner() {
         io.print("Unknown Order!!!");
     }
-
 
     
 }

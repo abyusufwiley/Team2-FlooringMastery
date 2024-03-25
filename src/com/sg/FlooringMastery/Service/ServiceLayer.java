@@ -8,12 +8,11 @@ import java.util.List;
 
 
 public interface ServiceLayer {
-    OrderDTO getOrder(int orderNumber, String name) throws OrderDAOException;
+    OrderDTO getOrder(int orderNumber, LocalDate date) throws OrderDAOException;
     List<OrderDTO> getAllOrders() throws OrderDAOException;
     OrderDTO addOrder(OrderDTO order) throws OrderDAOException;
-    OrderDTO editOrder(OrderDTO order) throws OrderDAOException;
+    OrderDTO editOrder(OrderDTO order, LocalDate date) throws OrderDAOException;
     OrderDTO removeOrder(int orderNumber, LocalDate date) throws OrderDAOException;
     void exportAllData() throws OrderDAOException;
-
 
 }
