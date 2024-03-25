@@ -17,4 +17,5 @@ public interface OrderDAO {
 
     OrderDTO removeOrder(int orderId, LocalDate date) throws OrderDAOException;
 
+    void exportAllData() throws OrderDAOException;
 }

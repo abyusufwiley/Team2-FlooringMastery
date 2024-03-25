@@ -9,13 +9,19 @@ import java.math.BigDecimal;
 import java.util.*;
 
 public class TaxDAOImpl implements TaxDAO{
-    private final String TAXES_FILE = "Taxes.txt";
+    private final String TAXES_FILE;
     private final String DELIMITER = ",";
     private Map<String, TaxDTO> taxes = new HashMap<>();
 
     public TaxDAOImpl(){
-        loadTaxes();
+        TAXES_FILE = "Data\\Taxes.txt";     
     }
+
+    // Constructor
+    public TaxDAOImpl(String taxesTextFile){
+        TAXES_FILE = taxesTextFile;
+    }
+
     public void loadTaxes() {
         Scanner scanner;
         try {
@@ -34,19 +40,21 @@ public class TaxDAOImpl implements TaxDAO{
     public TaxDTO unmarshallTax(String taxAsText){
         String[] taxTokens = taxAsText.split(DELIMITER);
         String state = taxTokens[0];
-        BigDecimal taxRate = new BigDecimal(taxTokens[1]);
-        String stateName = taxTokens[2];
+        BigDecimal taxRate = new BigDecimal(taxTokens[2]);
+        String stateName = taxTokens[1];
         return new TaxDTO(state, stateName, taxRate);
 
     }
 
     @Override
     public List<TaxDTO> getAllTaxes() {
+        loadTaxes();
         return new ArrayList<>(taxes.values());
     }
 
     @Override
     public TaxDTO getTax(String state) {
+        loadTaxes();
         return taxes.get(state);
     }
 }

@@ -68,8 +68,8 @@ public class OrderDTO {
         return area;
     }
 
-    public void setArea(BigDecimal area) {
-        this.area = area;
+    public void setArea(BigDecimal area2) {
+        this.area = area2;
     }
 
     public BigDecimal getCostPerSquareFoot() {

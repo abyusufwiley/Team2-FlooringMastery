@@ -8,15 +8,25 @@ import java.io.FileReader;
 import java.math.BigDecimal;
 import java.util.*;
 
+// ProductDAOImpl implements ProductDAO
+// only reads from the Products.txt file. Does not write to it.
+
 public class ProductDAOImpl implements ProductDAO{
-    private final String PRODUCTS_FILE = "Products.txt";
+    private final String PRODUCTS_FILE;
     private final String DELIMITER = ",";
     private Map<String, ProductDTO> products = new HashMap<>();
 
+    // Constructor
     public ProductDAOImpl(){
-        loadProducts();
+        PRODUCTS_FILE = "Data\\Products.txt";
     }
 
+    // Constructor
+    public ProductDAOImpl(String productsTextFile){
+        PRODUCTS_FILE = productsTextFile;
+    }
+
+    // loadProducts() reads from the Products.txt file and populates the products map  with the data
     public void loadProducts(){
         Scanner scanner;
         try {
@@ -42,11 +52,13 @@ public class ProductDAOImpl implements ProductDAO{
 
     @Override
     public List<ProductDTO> getAllProducts() {
+        loadProducts();
         return new ArrayList<>(products.values());
     }
 
     @Override
     public ProductDTO getProduct(String productType) {
+        loadProducts();
         return products.get(productType);
     }
 }

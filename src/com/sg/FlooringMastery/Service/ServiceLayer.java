@@ -1,5 +1,6 @@
 package com.sg.FlooringMastery.Service;
 
+import com.sg.FlooringMastery.DAO.OrderDAOException;
 import com.sg.FlooringMastery.DTO.OrderDTO;
 
 import java.time.LocalDate;
@@ -7,12 +8,12 @@ import java.util.List;
 
 
 public interface ServiceLayer {
-    OrderDTO getOrder(int orderId, String name);
-    List<OrderDTO> getAllOrders();
-    OrderDTO addOrder(OrderDTO order);
-    OrderDTO editOrder(OrderDTO order);
-    OrderDTO removeOrder(int orderId, LocalDate date);
-
+    OrderDTO getOrder(int orderNumber, String name) throws OrderDAOException;
+    List<OrderDTO> getAllOrders() throws OrderDAOException;
+    OrderDTO addOrder(OrderDTO order) throws OrderDAOException;
+    OrderDTO editOrder(OrderDTO order) throws OrderDAOException;
+    OrderDTO removeOrder(int orderNumber, LocalDate date) throws OrderDAOException;
+    void exportAllData() throws OrderDAOException;
 
 
 }

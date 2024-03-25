@@ -13,9 +13,22 @@ import java.util.*;
 import com.sg.FlooringMastery.DTO.OrderDTO;
 
 public class OrderDAOImpl implements OrderDAO{
-    private final String ORDER_FILE = "Orders.txt";
+    private final String ORDER_FILE;
     private final String DELIMITER = ",";
     private Map<Integer, OrderDTO> orders = new HashMap<>();
+
+    
+    public OrderDAOImpl(){
+        ORDER_FILE = "Orders\\Orders.txt";       
+    }
+
+    // public OrderDAOImpl(){    
+    // }
+
+    // Constructor
+    public OrderDAOImpl(String orderTextFile){
+        ORDER_FILE = orderTextFile;
+    }
 
 
 
@@ -23,14 +36,34 @@ public class OrderDAOImpl implements OrderDAO{
     public OrderDTO getOrder(int orderId, String name) throws OrderDAOException {
         //get order by order id and name
         loadOrder();
-        
-        throw new UnsupportedOperationException("");
+        return orders.get(orderId);
     }
 
 
+   
+    private void writeOrder() throws OrderDAOException{
+        PrintWriter out;
+
+        try {
+            //LocalDate date = LocalDate.now();
+            out = new PrintWriter(new FileWriter("Orders_" + LocalDate.now() + ".txt"));
+        } catch (IOException e) {
+            throw new OrderDAOException("Could not save order data.", e);
+        }
+
+        String orderAsText;
+        List<OrderDTO> orderList = this.getAllOrders();
+        for (OrderDTO currentOrder : orderList){
+            orderAsText = marshallItem(currentOrder);
+            out.println(orderAsText);
+            out.flush();
+        }
+        out.close();
+    }
 
     private void loadOrder() throws OrderDAOException{
         Scanner scanner;
+        //file may not exist if it doesn't create an empty file
 
         try {
             scanner = new Scanner(new BufferedReader(new FileReader(ORDER_FILE)));
@@ -49,8 +82,6 @@ public class OrderDAOImpl implements OrderDAO{
         }
 
         scanner.close();
-
-        throw new UnsupportedOperationException("Unimplemented method 'loadOrder'");
     }
 
     private OrderDTO unmarshallItem (String itemAsText){
@@ -90,24 +121,24 @@ public class OrderDAOImpl implements OrderDAO{
         return orderAsText;
     }
 
-    private void writeOrder() throws OrderDAOException{
-        PrintWriter out;
+    // private void writeOrder() throws OrderDAOException{
+    //     PrintWriter out;
 
-        try {
-            out = new PrintWriter(new FileWriter(ORDER_FILE));
-        } catch (IOException e) {
-            throw new OrderDAOException("Could not save order data.", e);
-        }
+    //     try {
+    //         out = new PrintWriter(new FileWriter(ORDER_FILE));
+    //     } catch (IOException e) {
+    //         throw new OrderDAOException("Could not save order data.", e);
+    //     }
 
-        String orderAsText;
-        List<OrderDTO> orderList = this.getAllOrders();
-        for (OrderDTO currentOrder : orderList){
-            orderAsText = marshallItem(currentOrder);
-            out.println(orderAsText);
-            out.flush();
-        }
-        out.close();
-    }
+    //     String orderAsText;
+    //     List<OrderDTO> orderList = this.getAllOrders();
+    //     for (OrderDTO currentOrder : orderList){
+    //         orderAsText = marshallItem(currentOrder);
+    //         out.println(orderAsText);
+    //         out.flush();
+    //     }
+    //     out.close();
+    // }
 
 
 
@@ -140,5 +171,33 @@ public class OrderDAOImpl implements OrderDAO{
         writeOrder();
         return order;
     }
+
+    @Override
+    public void exportAllData() throws OrderDAOException {
+        // Load all the current orders from a file into memory
+        loadOrder();
+        // Declare a PrintWriter object to write formatted data to an output stream
+        PrintWriter out;
+        try {
+            // Initialize the PrintWriter object with a FileWriter for the file "DataExport.txt"
+            // If the file doesn't exist, FileWriter will create it
+            out = new PrintWriter(new FileWriter("DataExport.txt"));
+        } catch (IOException e) {
+            throw new OrderDAOException("Could not save order data.", e);
+        }
+
+        // Declare a string to hold the order data as text
+        String orderAsText;
+        // Retrieve all the orders that were loaded by the loadOrder() method
+        List<OrderDTO> orderList = this.getAllOrders();
+        // Iterate over each order in the order list
+        for (OrderDTO currentOrder : orderList){
+            orderAsText = marshallItem(currentOrder);
+            out.println(orderAsText);
+            out.flush();
+        }
+        out.close();
+
+     }
 
 }

@@ -1,15 +1,27 @@
 package com.sg.FlooringMastery.Controller;
 
-import com.sg.FlooringMastery.UI.UserIO;
-import com.sg.FlooringMastery.UI.UserIOImpl;
+import java.util.List;
+
+import com.sg.FlooringMastery.DAO.OrderDAOException;
+import com.sg.FlooringMastery.DTO.OrderDTO;
+import com.sg.FlooringMastery.Service.ServiceLayer;
 import com.sg.FlooringMastery.UI.View;
 
 //hello
 public class Controller {
-    private View view = new View();
-    private UserIO io = new UserIOImpl();
+    private View view ;
+    private ServiceLayer orderService;
 
-    public void run() {
+    public Controller(View view, ServiceLayer serviceLayer) {
+        this.view = view;
+        this.orderService = serviceLayer;
+    }
+
+    public Controller() {
+    }
+
+
+    public void run() throws OrderDAOException {
         boolean keepGoing = true;
         int menuSelection = 0;
         while (keepGoing) {
@@ -18,33 +30,82 @@ public class Controller {
 
             switch (menuSelection) {
                 case 1:
-                    io.print("DISPLAY ORDERS");
+                    displayOrders();
                     break;
                 case 2:
-                    io.print("ADD ORDER");
+                    addOrder();
                     break;
                 case 3:
-                    io.print("EDIT ORDER");
+                    editOrder();
                     break;
                 case 4:
-                    io.print("REMOVE ORDER");
+                    removeOrder();
                     break;
                 case 5:
-                    io.print("EXPORT ALL DATA");
+                    exportAllData();
                     break;
                 case 6:
                     keepGoing = false;
                     break;
                 default:
-                    io.print("UNKNOWN COMMAND");
+                    unknownCommand();
             }
 
         }
-        io.print("GOOD BYE");
+        exitMessage();
     }
 
     private int getMenuSelection() {
         return view.printMenuAndGetSelection();
+    }
+
+    private void displayOrders() throws OrderDAOException {
+        view.displayOrdersBanner();
+        List<OrderDTO> orders = orderService.getAllOrders();
+        view.displayOrders(orders);
+    }
+
+    private void addOrder() throws OrderDAOException {
+        view.addOrderBanner();
+        OrderDTO newOrder = view.getNewOrderInfo();
+        orderService.addOrder(newOrder);
+        view.displayOrdersBanner();
+    }
+
+    private void editOrder() throws OrderDAOException {
+        view.editOrderBanner();
+        int orderId = view.getOrderNumber();
+        String name = view.getCustomerName();
+        OrderDTO order = orderService.getOrder(orderId, name);
+        OrderDTO editedOrder = view.editOrderInfo(order);
+        orderService.editOrder(editedOrder);
+        view.displayOrdersBanner();
+    }
+
+    private void removeOrder() throws OrderDAOException {
+        view.removeOrderBanner();
+        int orderId = view.getOrderNumber();
+        String name = view.getCustomerName();
+        OrderDTO order = orderService.getOrder(orderId, name);
+        orderService.removeOrder(orderId, order.getDate());
+        view.displayOrdersBanner();
+    }
+
+    private void exportAllData() throws OrderDAOException {
+        view.exportAllDataBanner();
+        orderService.exportAllData();
+    }
+
+    private void unknownCommand() {
+        view.displayUnknownCommandBanner();
+    }
+
+    private void exitMessage() {
+        view.displayExitBanner();
+    }
+
+    private void errorMessage(String errorMsg) {
+        view.displayErrorMessage(errorMsg);
     }
 
 }
