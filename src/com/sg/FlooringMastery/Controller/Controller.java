@@ -75,8 +75,8 @@ public class Controller {
     private void editOrder() throws OrderDAOException {
         view.editOrderBanner();
         int orderId = view.getOrderNumber();
-        String name = view.getCustomerName();
-        OrderDTO order = orderService.getOrder(orderId, name);
+        String date = view.getDate();
+        OrderDTO order = orderService.getOrder(orderId, date);
         OrderDTO editedOrder = view.editOrderInfo(order);
         orderService.editOrder(editedOrder);
         view.displayOrdersBanner();
@@ -85,8 +85,8 @@ public class Controller {
     private void removeOrder() throws OrderDAOException {
         view.removeOrderBanner();
         int orderId = view.getOrderNumber();
-        String name = view.getCustomerName();
-        OrderDTO order = orderService.getOrder(orderId, name);
+        String date = view.getDate();
+        OrderDTO order = orderService.getOrder(orderId, date);
         orderService.removeOrder(orderId, order.getDate());
         view.displayOrdersBanner();
     }

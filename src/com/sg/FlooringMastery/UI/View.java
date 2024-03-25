@@ -125,8 +125,8 @@ public class View {
         return io.readInt("Please enter Order Number");
     }
 
-    public String getCustomerName() {
-        return io.readString("Please enter Customer Name");
+    public String getDate() {
+        return io.readString("Please enter the date (MM/DD/YYYY)");
     }
 
     public void displayOrder(OrderDTO order) {

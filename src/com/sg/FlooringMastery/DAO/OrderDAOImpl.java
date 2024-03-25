@@ -190,24 +190,26 @@ public class OrderDAOImpl implements OrderDAO{
 
     @Override
     public OrderDTO editOrder(OrderDTO order) throws OrderDAOException {
-        //loadOrder();
+        String orderFile = buildFilename(LocalDate.now());
+        loadOrder(orderFile);
         orders.put(order.getOrderNumber(), order);
-        //writeOrder();
+        writeOrder(orderFile);
         return order;
     }
 
     @Override
     public OrderDTO removeOrder(int orderId, LocalDate date) throws OrderDAOException {
-        //loadOrder();
+        String orderFile = buildFilename(LocalDate.now());
+        loadOrder(orderFile);
         OrderDTO order = orders.remove(orderId);
-        //writeOrder();
+        writeOrder(orderFile);
         return order;
     }
 
     @Override
     public void exportAllData() throws OrderDAOException {
-        // Load all the current orders from a file into memory
-        //loadOrder();
+        String orderFile = buildFilename(LocalDate.now());
+        loadOrder(orderFile);
         // Declare a PrintWriter object to write formatted data to an output stream
         PrintWriter out;
         try {
