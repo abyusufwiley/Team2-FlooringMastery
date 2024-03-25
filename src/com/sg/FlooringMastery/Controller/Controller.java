@@ -73,7 +73,7 @@ public class Controller {
         view.displayOrdersBanner();
     }
 
-    private void editOrder() throws OrderDAOException {
+    private void editOrder() throws OrderDAOException { 
         view.editOrderBanner();
         int orderId = view.getOrderNumber();
         LocalDate date = view.getDate();

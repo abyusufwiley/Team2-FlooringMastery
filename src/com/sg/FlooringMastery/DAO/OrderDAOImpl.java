@@ -188,10 +188,9 @@ public class OrderDAOImpl implements OrderDAO{
 
      }
 
-     private LocalDate getDateFromFilename(String filename){
+     public LocalDate getDateFromFilename(String filename){
         String date = filename.substring(7, 17);
         return LocalDate.parse(date);
     }
-
 
 }

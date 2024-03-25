@@ -90,7 +90,7 @@ public class ServiceLayerImpl implements ServiceLayer{
     }
 
     @Override
-    public OrderDTO editOrder(OrderDTO order, LocalDate date) throws OrderDAOException{
+    public OrderDTO editOrder(OrderDTO order, LocalDate date) throws OrderDAOException{ 
         validateOrderData(order);
         return orderDAO.editOrder(order, date) ;
     }
@@ -106,3 +106,4 @@ public class ServiceLayerImpl implements ServiceLayer{
     }
 
 }
+
