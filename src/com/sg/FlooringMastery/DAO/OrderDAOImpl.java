@@ -1,6 +1,7 @@
 package com.sg.FlooringMastery.DAO;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -13,21 +14,36 @@ import java.util.*;
 import com.sg.FlooringMastery.DTO.OrderDTO;
 
 public class OrderDAOImpl implements OrderDAO{
-    private final String ORDER_FILE;
+    private String ORDER_FILE;
     private final String DELIMITER = ",";
     private Map<Integer, OrderDTO> orders = new HashMap<>();
 
+    /*
+     * user creates an order
+     * check if that day file exists
+     * if it does, load the file
+     * add the order to the file
+     * save the file
+     * 
+     * 
+     * if the file doesn't exist, create a new file of that day
+     * add the order to the file
+     * save the file
+     * 
+     * 
+     */
+
     
     public OrderDAOImpl(){
-        ORDER_FILE = "Orders\\Orders.txt";       
+        //ORDER_FILE = "Orders\\Orders.txt";       
     }
 
-    // public OrderDAOImpl(){    
-    // }
-
-    // Constructor
     public OrderDAOImpl(String orderTextFile){
         ORDER_FILE = orderTextFile;
+    }
+
+    public String buildFilename(LocalDate date){
+        return "Orders-" + date + ".txt";
     }
 
 
@@ -35,18 +51,28 @@ public class OrderDAOImpl implements OrderDAO{
     @Override
     public OrderDTO getOrder(int orderId, String name) throws OrderDAOException {
         //get order by order id and name
-        loadOrder();
+        String orderFile = buildFilename(LocalDate.now());
+        loadOrder(orderFile);
         return orders.get(orderId);
     }
 
 
    
-    private void writeOrder() throws OrderDAOException{
+    private void writeOrder(String orderFile) throws OrderDAOException{
         PrintWriter out;
+        //file may not exist if it doesn't create an empty file to write to
+        if (orders.isEmpty()){
+            try {
+                out = new PrintWriter(new FileWriter(orderFile));
+            } catch (IOException e) {
+                throw new OrderDAOException("Could not save order data.", e);
+            }
+            out.close();
+        }
 
         try {
             //LocalDate date = LocalDate.now();
-            out = new PrintWriter(new FileWriter("Orders_" + LocalDate.now() + ".txt"));
+            out = new PrintWriter(new FileWriter(orderFile));
         } catch (IOException e) {
             throw new OrderDAOException("Could not save order data.", e);
         }
@@ -61,12 +87,16 @@ public class OrderDAOImpl implements OrderDAO{
         out.close();
     }
 
-    private void loadOrder() throws OrderDAOException{
+    private void loadOrder(String orderFile) throws OrderDAOException{
         Scanner scanner;
-        //file may not exist if it doesn't create an empty file
+
+        File file = new File(orderFile);
+        if (!file.exists()){
+            return;
+        }
 
         try {
-            scanner = new Scanner(new BufferedReader(new FileReader(ORDER_FILE)));
+            scanner = new Scanner(new BufferedReader(new FileReader(file)));
         } catch (FileNotFoundException e) {
             throw new OrderDAOException(
                     "-_- Could not load item data into memory.", e);
@@ -144,38 +174,40 @@ public class OrderDAOImpl implements OrderDAO{
 
     @Override
     public List<OrderDTO> getAllOrders() throws OrderDAOException {
-        loadOrder();
+        String orderFile = buildFilename(LocalDate.now());
+        loadOrder(orderFile);
         return new ArrayList<>(orders.values());
     }
 
     @Override
     public OrderDTO addOrder(OrderDTO order) throws OrderDAOException {
-        loadOrder();
+        String orderFile = buildFilename(LocalDate.now());
+        loadOrder(orderFile);
         orders.put(order.getOrderNumber(), order);
-        writeOrder();
+        writeOrder(orderFile);
         return order;
     }
 
     @Override
     public OrderDTO editOrder(OrderDTO order) throws OrderDAOException {
-        loadOrder();
+        //loadOrder();
         orders.put(order.getOrderNumber(), order);
-        writeOrder();
+        //writeOrder();
         return order;
     }
 
     @Override
     public OrderDTO removeOrder(int orderId, LocalDate date) throws OrderDAOException {
-        loadOrder();
+        //loadOrder();
         OrderDTO order = orders.remove(orderId);
-        writeOrder();
+        //writeOrder();
         return order;
     }
 
     @Override
     public void exportAllData() throws OrderDAOException {
         // Load all the current orders from a file into memory
-        loadOrder();
+        //loadOrder();
         // Declare a PrintWriter object to write formatted data to an output stream
         PrintWriter out;
         try {
