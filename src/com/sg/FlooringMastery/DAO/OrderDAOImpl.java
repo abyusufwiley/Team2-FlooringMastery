@@ -8,10 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 import com.sg.FlooringMastery.DTO.OrderDTO;
 
@@ -116,26 +113,32 @@ public class OrderDAOImpl implements OrderDAO{
 
     @Override
     public List<OrderDTO> getAllOrders() throws OrderDAOException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllOrders'");
+        loadOrder();
+        return new ArrayList<>(orders.values());
     }
 
     @Override
     public OrderDTO addOrder(OrderDTO order) throws OrderDAOException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addOrder'");
+        loadOrder();
+        orders.put(order.getOrderNumber(), order);
+        writeOrder();
+        return order;
     }
 
     @Override
-    public OrderDTO editOrder(int orderId, String name) throws OrderDAOException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'editOrder'");
+    public OrderDTO editOrder(OrderDTO order) throws OrderDAOException {
+        loadOrder();
+        orders.put(order.getOrderNumber(), order);
+        writeOrder();
+        return order;
     }
 
     @Override
     public OrderDTO removeOrder(int orderId, LocalDate date) throws OrderDAOException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeOrder'");
+        loadOrder();
+        OrderDTO order = orders.remove(orderId);
+        writeOrder();
+        return order;
     }
 
 }
