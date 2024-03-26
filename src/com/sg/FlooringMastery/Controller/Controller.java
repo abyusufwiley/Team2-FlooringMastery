@@ -73,20 +73,44 @@ public class Controller {
     }
 
     private void addOrder() throws OrderDAOException {
-        view.addOrderBanner();
-        OrderDTO newOrder = view.getNewOrderInfo();
-        orderService.addOrder(newOrder);
-        view.displayOrdersBanner();
+        boolean isValid = false;
+        while (!isValid) {
+            try {
+                view.addOrderBanner();
+                List<String> validStates = orderService.getValidStates();
+                List<String> validProducts = orderService.getValidProducts();
+                OrderDTO newOrder = view.getNewOrderInfo(validStates, validProducts);
+                orderService.addOrder(newOrder);
+                view.displayOrderAddedBanner(newOrder);
+                isValid = true; // Exit the loop if the order is successfully added
+            } catch (OrderDAOException e) {
+                view.displayErrorMessage(e.getMessage()); // Display the error message and loop again
+            }
+        }
     }
 
-    private void editOrder() throws OrderDAOException { 
-        view.editOrderBanner();
-        int orderId = view.getOrderNumber();
-        LocalDate date = view.getDate();
-        OrderDTO order = orderService.getOrder(orderId, date);
-        OrderDTO editedOrder = view.editOrderInfo(order);
-        orderService.editOrder(editedOrder, date);
-        view.displayOrdersBanner();
+    private void editOrder() throws OrderDAOException {
+        boolean validOrderFound = false;
+        while (!validOrderFound) {
+            try {
+                view.editOrderBanner();
+                int orderId = view.getOrderNumber();
+                LocalDate date = view.getDate();
+                OrderDTO order = orderService.getOrder(orderId, date);
+
+                if (order == null) {
+                    view.displayErrorMessage("No order found with the given order number and date. Please try again.");
+                    continue;
+                }
+
+                OrderDTO editedOrder = view.editOrderInfo(order, orderService.getValidStates(), orderService.getValidProducts());
+                orderService.editOrder(editedOrder, date);
+                view.displayOrderEditedBanner(editedOrder);
+                validOrderFound = true; // Exit the loop if a valid order is found and edited.
+            } catch (Exception e) {
+                view.displayErrorMessage(e.getMessage());
+            }
+        }
     }
 
 

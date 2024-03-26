@@ -22,7 +22,7 @@ public class Main {
         TaxDAO myTaxDAO = new TaxDAOImpl();
         ServiceLayer serviceLayer = new ServiceLayerImpl(myOrderDAO, myProductDAO, myTaxDAO);
         View view = new View(myIO);
-        
+
         Controller controller = new Controller(view, serviceLayer);
         //Controller controller = new Controller();
         controller.run();
