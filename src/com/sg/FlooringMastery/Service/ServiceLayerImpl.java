@@ -8,18 +8,20 @@ import com.sg.FlooringMastery.DAO.TaxDAO;
 import com.sg.FlooringMastery.DTO.OrderDTO;
 import com.sg.FlooringMastery.DTO.ProductDTO;
 import com.sg.FlooringMastery.DTO.TaxDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
+@Component
 public class ServiceLayerImpl implements ServiceLayer{
     private OrderDAO orderDAO;
     private TaxDAO taxDAO;
     private ProductDAO productDAO;
 
-
+@Autowired
     public ServiceLayerImpl(OrderDAO orderDAO, ProductDAO productDAO, TaxDAO taxDAO){
         this.orderDAO = orderDAO;
         this.productDAO = productDAO;

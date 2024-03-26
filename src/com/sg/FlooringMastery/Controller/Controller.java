@@ -8,12 +8,14 @@ import com.sg.FlooringMastery.DAO.OrderDAOException;
 import com.sg.FlooringMastery.DTO.OrderDTO;
 import com.sg.FlooringMastery.Service.ServiceLayer;
 import com.sg.FlooringMastery.UI.View;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-//hello
+@Component
 public class Controller {
     private View view ;
     private ServiceLayer orderService;
-
+@Autowired
     public Controller(View view, ServiceLayer serviceLayer) {
         this.view = view;
         this.orderService = serviceLayer;

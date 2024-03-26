@@ -15,7 +15,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.sg.FlooringMastery.DTO.OrderDTO;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OrderDAOImpl implements OrderDAO{
     private String ORDER_FILE;
     private final String DELIMITER = ",";

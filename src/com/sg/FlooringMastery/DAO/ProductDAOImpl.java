@@ -1,6 +1,7 @@
 package com.sg.FlooringMastery.DAO;
 
 import com.sg.FlooringMastery.DTO.ProductDTO;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -10,7 +11,7 @@ import java.util.*;
 
 // ProductDAOImpl implements ProductDAO
 // only reads from the Products.txt file. Does not write to it.
-
+@Component
 public class ProductDAOImpl implements ProductDAO{
     private final String PRODUCTS_FILE;
     private final String DELIMITER = ",";

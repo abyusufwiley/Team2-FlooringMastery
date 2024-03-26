@@ -1,13 +1,14 @@
 package com.sg.FlooringMastery.DAO;
 
 import com.sg.FlooringMastery.DTO.TaxDTO;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.math.BigDecimal;
 import java.util.*;
-
+@Component
 public class TaxDAOImpl implements TaxDAO{
     private final String TAXES_FILE;
     private final String DELIMITER = ",";

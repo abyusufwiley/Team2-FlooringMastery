@@ -5,10 +5,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.sg.FlooringMastery.DTO.OrderDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class View {
     private UserIO io = new UserIOImpl();
-
+@Autowired
     public View(UserIO io) {
         this.io = io;
     }
