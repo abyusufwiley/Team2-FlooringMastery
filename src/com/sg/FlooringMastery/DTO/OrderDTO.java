@@ -2,6 +2,7 @@ package com.sg.FlooringMastery.DTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class OrderDTO {
     private int orderNumber;
@@ -131,4 +132,34 @@ public class OrderDTO {
         this.customerName = customerName;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof OrderDTO orderDTO)) return false;
+        return orderNumber == orderDTO.orderNumber && Objects.equals(customerName, orderDTO.customerName) && Objects.equals(state, orderDTO.state) && Objects.equals(taxRate, orderDTO.taxRate) && Objects.equals(productType, orderDTO.productType) && Objects.equals(area, orderDTO.area) && Objects.equals(costPerSquareFoot, orderDTO.costPerSquareFoot) && Objects.equals(laborCostPerSquareFoot, orderDTO.laborCostPerSquareFoot) && Objects.equals(materialCost, orderDTO.materialCost) && Objects.equals(laborCost, orderDTO.laborCost) && Objects.equals(tax, orderDTO.tax) && Objects.equals(total, orderDTO.total) && Objects.equals(date, orderDTO.date);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(orderNumber, customerName, state, taxRate, productType, area, costPerSquareFoot, laborCostPerSquareFoot, materialCost, laborCost, tax, total, date);
+    }
+
+    @Override
+    public String toString() {
+        return "OrderDTO{" +
+                "orderNumber=" + orderNumber +
+                ", customerName='" + customerName + '\'' +
+                ", state='" + state + '\'' +
+                ", taxRate=" + taxRate +
+                ", productType='" + productType + '\'' +
+                ", area=" + area +
+                ", costPerSquareFoot=" + costPerSquareFoot +
+                ", laborCostPerSquareFoot=" + laborCostPerSquareFoot +
+                ", materialCost=" + materialCost +
+                ", laborCost=" + laborCost +
+                ", tax=" + tax +
+                ", total=" + total +
+                ", date=" + date +
+                '}';
+    }
 }
