@@ -37,6 +37,9 @@ public class ServiceLayerImpl implements ServiceLayer{
 
     @Override
     public OrderDTO addOrder(OrderDTO order) throws OrderDAOException{
+        if (order.getDate() == null) {
+            throw new OrderDAOException("Order date cannot be null.");
+        }
         validateOrderData(order);
         order.setMaterialCost(calculateMaterialCost(order));
         order.setLaborCost(calculateLaborCost(order));
@@ -79,7 +82,12 @@ public class ServiceLayerImpl implements ServiceLayer{
                 || order.getArea().compareTo(BigDecimal.valueOf(0)) <= 0 ){ //|| order.getArea().compareTo(BigDecimal.valueOf(100)) < 0{
                 //|| order.getDate().isBefore(LocalDate.now())){
             //throw new OrderDAOException("ERROR: All fields [Customer Name, State, Product Type, Area] are required. Area must be greater than 100. Date must be in the future.");
+
         }
+        if (order.getDate() == null || order.getDate().isBefore(LocalDate.now())) {
+            throw new OrderDAOException("ERROR: Order date is not set or must be in the future.");
+        }
+
     }
 
     //method to validate date input with the file name
@@ -90,7 +98,10 @@ public class ServiceLayerImpl implements ServiceLayer{
     }
 
     @Override
-    public OrderDTO editOrder(OrderDTO order, LocalDate date) throws OrderDAOException{ 
+    public OrderDTO editOrder(OrderDTO order, LocalDate date) throws OrderDAOException{
+        if (order.getDate() == null) {
+            order.setDate(date);
+        }
         validateOrderData(order);
         return orderDAO.editOrder(order, date) ;
     }
@@ -103,6 +114,9 @@ public class ServiceLayerImpl implements ServiceLayer{
     @Override
     public void exportAllData() throws OrderDAOException{
         orderDAO.exportAllData();
+    }
+    public List<OrderDTO> getOrdersByDate(LocalDate date) throws OrderDAOException {
+        return orderDAO.getOrdersByDate(date);
     }
 
 }

@@ -2,6 +2,8 @@ package com.sg.FlooringMastery.UI;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class UserIOImpl implements UserIO{
@@ -119,13 +121,14 @@ public class UserIOImpl implements UserIO{
 
     @Override
     public LocalDate readLocalDate(String prompt) {
-        System.out.println(prompt);
-        while(true){
-            try{
-                String date = console.nextLine();
-                return LocalDate.parse(date, java.time.format.DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-            }catch(Exception e){
-                System.out.println("Please Enter a Valid Date");
+        while (true) {
+            try {
+                System.out.println(prompt);
+                String dateInput = console.nextLine();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                return LocalDate.parse(dateInput, formatter);
+            } catch (DateTimeParseException e) {
+                System.out.println("Please Enter a Valid Date in the format YYYY-MM-DD");
             }
         }
     }

@@ -14,7 +14,7 @@ public class TaxDAOImpl implements TaxDAO{
     private Map<String, TaxDTO> taxes = new HashMap<>();
 
     public TaxDAOImpl(){
-        TAXES_FILE = "Data\\Taxes.txt";     
+        TAXES_FILE = "Data/Taxes.txt";
     }
 
     // Constructor

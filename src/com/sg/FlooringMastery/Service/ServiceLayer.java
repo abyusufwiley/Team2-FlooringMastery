@@ -13,6 +13,7 @@ public interface ServiceLayer {
     OrderDTO addOrder(OrderDTO order) throws OrderDAOException;
     OrderDTO editOrder(OrderDTO order, LocalDate date) throws OrderDAOException;
     OrderDTO removeOrder(int orderNumber, LocalDate date) throws OrderDAOException;
+    List<OrderDTO> getOrdersByDate(LocalDate date) throws OrderDAOException;
     void exportAllData() throws OrderDAOException;
 
 }

@@ -16,6 +16,7 @@ public interface OrderDAO {
     OrderDTO editOrder(OrderDTO order, LocalDate date) throws OrderDAOException;
 
     OrderDTO removeOrder(int orderId, LocalDate date) throws OrderDAOException;
+    List<OrderDTO> getOrdersByDate(LocalDate date) throws OrderDAOException;
 
     void exportAllData() throws OrderDAOException;
 

@@ -1,6 +1,7 @@
 package com.sg.FlooringMastery.Controller;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import com.sg.FlooringMastery.DAO.OrderDAOException;
@@ -62,8 +63,13 @@ public class Controller {
 
     private void displayOrders() throws OrderDAOException {
         view.displayOrdersBanner();
-        List<OrderDTO> orders = orderService.getAllOrders();
-        view.displayOrders(orders);
+        LocalDate date = view.getDate();
+        List<OrderDTO> orders = orderService.getOrdersByDate(date);
+        if (orders.isEmpty()) {
+            view.displayErrorMessage("No orders found for the date: " + date.format(DateTimeFormatter.ofPattern("MM-dd-yyyy")));
+        } else {
+            view.displayOrders(orders);
+        }
     }
 
     private void addOrder() throws OrderDAOException {

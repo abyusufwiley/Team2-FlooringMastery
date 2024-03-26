@@ -94,12 +94,14 @@ public class View {
 
     public OrderDTO getNewOrderInfo() {
         int orderNumber = io.readInt("Please enter Order Number");
+        LocalDate date = io.readLocalDate("Please enter Date in the format YYYY-MM-DD");
         String customerName = io.readString("Please enter Customer Name");
         String state = io.readString("Please enter State");
         String productType = io.readString("Please enter Product Type");
         double area = io.readDouble("Please enter Area");
 
         OrderDTO currentOrder = new OrderDTO(orderNumber);
+        currentOrder.setDate(date);
         currentOrder.setCustomerName(customerName);
         currentOrder.setState(state);
         currentOrder.setProductType(productType);
@@ -109,6 +111,7 @@ public class View {
     }
 
     public OrderDTO editOrderInfo(OrderDTO order) {
+
         String customerName = io.readString("Please enter Customer Name");
         String state = io.readString("Please enter State");
         String productType = io.readString("Please enter Product Type");

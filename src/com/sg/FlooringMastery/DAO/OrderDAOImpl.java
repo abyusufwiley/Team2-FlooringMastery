@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 import com.sg.FlooringMastery.DTO.OrderDTO;
@@ -19,7 +21,6 @@ public class OrderDAOImpl implements OrderDAO{
     private Map<Integer, OrderDTO> orders = new HashMap<>();
 
 
-    
     public OrderDAOImpl(){      
     }
 
@@ -28,7 +29,8 @@ public class OrderDAOImpl implements OrderDAO{
     }
 
     public String buildFilename(LocalDate date){
-        return "Orders-" + date + ".txt";
+        DateTimeFormatter dateFromat = DateTimeFormatter.ofPattern("MMddyyyy");
+        return "Orders_" + date.format(dateFromat) + ".txt";
     }
 
 
@@ -36,44 +38,38 @@ public class OrderDAOImpl implements OrderDAO{
     @Override
     public OrderDTO getOrder(int orderId, LocalDate date) throws OrderDAOException {
         //get order by order id and name
-        String orderFile = buildFilename(LocalDate.now());
+        String orderFile = buildFilename(date);
         loadOrder(orderFile);
         return orders.get(orderId);
     }
 
 
-   
-    private void writeOrder(String orderFile) throws OrderDAOException{
-        PrintWriter out;
-        //file may not exist if it doesn't create an empty file to write to
-        if (orders.isEmpty()){
+
+    private void writeOrder(String orderFile) throws OrderDAOException {
+        File file = new File(orderFile);
+        if (!file.exists()) {
             try {
-                out = new PrintWriter(new FileWriter(orderFile));
+                file.createNewFile();
             } catch (IOException e) {
-                throw new OrderDAOException("Could not save order data.", e);
+                throw new OrderDAOException("Could not create order file.", e);
             }
-            out.close();
         }
 
-        try {
-            out = new PrintWriter(new FileWriter(orderFile));
+        try (PrintWriter out = new PrintWriter(new FileWriter(file))) {
+            for (OrderDTO currentOrder : orders.values()) {
+                String orderAsText = marshallItem(currentOrder);
+                out.println(orderAsText);
+                out.flush();
+            }
         } catch (IOException e) {
             throw new OrderDAOException("Could not save order data.", e);
         }
-
-        String orderAsText;
-        List<OrderDTO> orderList = this.getAllOrders();
-        for (OrderDTO currentOrder : orderList){
-            orderAsText = marshallItem(currentOrder);
-            out.println(orderAsText);
-            out.flush();
-        }
-        out.close();
     }
 
     private void loadOrder(String orderFile) throws OrderDAOException{
+        orders.clear();
         Scanner scanner;
-
+        LocalDate fileDate = getDateFromFilename(orderFile);
         File file = new File(orderFile);
         if (!file.exists()){
             return;
@@ -92,6 +88,7 @@ public class OrderDAOImpl implements OrderDAO{
         while (scanner.hasNextLine()){
             currentLine = scanner.nextLine();
             currentOrder = unmarshallItem(currentLine);
+            currentOrder.setDate(fileDate);
             orders.put(currentOrder.getOrderNumber(), currentOrder);
         }
 
@@ -114,7 +111,7 @@ public class OrderDAOImpl implements OrderDAO{
         order.setLaborCost(new BigDecimal(orderTokens[9]));
         order.setTax(new BigDecimal(orderTokens[10]));
         order.setTotal(new BigDecimal(orderTokens[11]));
-        
+
         return order;
     }
 
@@ -131,6 +128,7 @@ public class OrderDAOImpl implements OrderDAO{
         orderAsText += order.getLaborCost() + DELIMITER;
         orderAsText += order.getTax() + DELIMITER;
         orderAsText += order.getTotal() + DELIMITER;
+        orderAsText += order.getDate().format(DateTimeFormatter.ofPattern("MM-dd-yyyy"));
         
         return orderAsText;
     }
@@ -145,7 +143,8 @@ public class OrderDAOImpl implements OrderDAO{
 
     @Override
     public OrderDTO addOrder(OrderDTO order) throws OrderDAOException {
-        String orderFile = buildFilename(LocalDate.now());
+        String orderFile = buildFilename(order.getDate());
+        orders.clear();
         loadOrder(orderFile);
         orders.put(order.getOrderNumber(), order);
         writeOrder(orderFile);
@@ -154,7 +153,7 @@ public class OrderDAOImpl implements OrderDAO{
 
     @Override
     public OrderDTO editOrder(OrderDTO order, LocalDate date) throws OrderDAOException {
-        String orderFile = buildFilename(date);
+        String orderFile = buildFilename(order.getDate());
         loadOrder(orderFile);
         orders.put(order.getOrderNumber(), order);
         writeOrder(orderFile);
@@ -189,8 +188,20 @@ public class OrderDAOImpl implements OrderDAO{
      }
 
      public LocalDate getDateFromFilename(String filename){
-        String date = filename.substring(7, 17);
-        return LocalDate.parse(date);
+        String date = filename.substring(7, 15);
+         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMddyyyy");
+         try {
+             return LocalDate.parse(date, dateFormatter);
+         } catch (DateTimeParseException e) {
+             throw new RuntimeException("Failed to parse the date from filename: " + filename, e);
+         }
     }
+
+    public List<OrderDTO> getOrdersByDate(LocalDate date) throws OrderDAOException {
+        String orderFile = buildFilename(date);
+        loadOrder(orderFile);
+        return new ArrayList<>(orders.values());
+    }
+
 
 }

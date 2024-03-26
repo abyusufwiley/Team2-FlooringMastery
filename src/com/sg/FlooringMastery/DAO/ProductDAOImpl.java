@@ -18,7 +18,7 @@ public class ProductDAOImpl implements ProductDAO{
 
     // Constructor
     public ProductDAOImpl(){
-        PRODUCTS_FILE = "Data\\Products.txt";
+        PRODUCTS_FILE = "Data/Products.txt";
     }
 
     // Constructor
