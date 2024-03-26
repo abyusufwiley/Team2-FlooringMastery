@@ -13,19 +13,6 @@ public class View {
         this.io = io;
     }
 
-    /*
-     * 
-     *   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  * <<Flooring Program>>
-  * 1. Display Orders
-  * 2. Add an Order
-  * 3. Edit an Order
-  * 4. Remove an Order
-  * 5. Export All Data
-  * 6. Quit
-  *
-  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-     */
 
     public int printMenuAndGetSelection() {
         io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
@@ -92,12 +79,32 @@ public class View {
         io.readString("Please hit enter to continue.");
     }
 
-    public OrderDTO getNewOrderInfo() {
+    public OrderDTO getNewOrderInfo(List<String> validStates, List<String> validProducts) {
         int orderNumber = io.readInt("Please enter Order Number");
         LocalDate date = io.readLocalDate("Please enter Date in the format YYYY-MM-DD");
         String customerName = io.readString("Please enter Customer Name");
-        String state = io.readString("Please enter State");
-        String productType = io.readString("Please enter Product Type");
+        String state = "";
+        boolean stateValid = false;
+        while (!stateValid) {
+            state = io.readString("Please enter State:");
+            if (validStates.contains(state)) {
+                stateValid = true;
+            } else {
+                io.print("Invalid state. Please enter a valid state.");
+            }
+        }
+
+        String productType = "";
+        boolean productValid = false;
+        while (!productValid) {
+            productType = io.readString("Please enter Product Type:");
+            if (validProducts.contains(productType)) {
+                productValid = true;
+            } else {
+                io.print("Invalid product type. Please enter a valid product type.");
+            }
+        }
+
         double area = io.readDouble("Please enter Area");
 
         OrderDTO currentOrder = new OrderDTO(orderNumber);
@@ -109,18 +116,48 @@ public class View {
 
         return currentOrder;
     }
+    public OrderDTO editOrderInfo(OrderDTO order, List<String> validStates, List<String> validProducts) {
 
-    public OrderDTO editOrderInfo(OrderDTO order) {
+        String customerName = io.readString("Please enter Customer Name (" + order.getCustomerName() + "):");
+        if (customerName.isEmpty()) {
+            order.setCustomerName(order.getCustomerName());
+        } else {
+            order.setCustomerName(customerName);
+        }
+        // State Validation
+        boolean stateValid = false;
+        String state = "";
+        while (!stateValid) {
+            state = io.readString("Please enter State: [" + order.getState() + "]:");
+            if (state.isEmpty() || validStates.contains(state)) {
+                stateValid = true;
+                if (!state.isEmpty()) {
+                    order.setState(state);
+                }
+            } else {
+                io.print("Invalid state. Please enter a valid state.");
+            }
+        }
 
-        String customerName = io.readString("Please enter Customer Name");
-        String state = io.readString("Please enter State");
-        String productType = io.readString("Please enter Product Type");
-        double area = io.readDouble("Please enter Area");
+        // Product Type Validation
+        boolean productValid = false;
+        String productType = "";
+        while (!productValid) {
+            productType = io.readString("Please enter Product Type: [" + order.getProductType() + "]:");
+            if (productType.isEmpty() || validProducts.contains(productType)) {
+                productValid = true;
+                if (!productType.isEmpty()) {
+                    order.setProductType(productType);
+                }
+            } else {
+                io.print("Invalid product type. Please enter a valid product type.");
+            }
+        }
 
-        order.setCustomerName(customerName);
-        order.setState(state);
-        order.setProductType(productType);
-        order.setArea(BigDecimal.valueOf(area));
+        double area = io.readDouble("Please enter Area (" + order.getArea() + "):");
+        if (area != 0) {
+            order.setArea(BigDecimal.valueOf(area));
+        }
 
         return order;
     }

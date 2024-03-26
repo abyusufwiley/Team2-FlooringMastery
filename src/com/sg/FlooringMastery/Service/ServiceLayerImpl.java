@@ -6,9 +6,12 @@ import com.sg.FlooringMastery.DAO.ProductDAO;
 import com.sg.FlooringMastery.DAO.ProductDAOException;
 import com.sg.FlooringMastery.DAO.TaxDAO;
 import com.sg.FlooringMastery.DTO.OrderDTO;
+import com.sg.FlooringMastery.DTO.ProductDTO;
+import com.sg.FlooringMastery.DTO.TaxDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ServiceLayerImpl implements ServiceLayer{
@@ -78,7 +81,7 @@ public class ServiceLayerImpl implements ServiceLayer{
                 || order.getProductType() == null
                 || order.getProductType().trim().length() == 0
                 || order.getArea() == null
-                //|| order.getArea().compareTo(BigDecimal.valueOf(0)) <= 0 
+                //|| order.getArea().compareTo(BigDecimal.valueOf(0)) <= 0
                 || order.getArea().compareTo(BigDecimal.valueOf(0)) <= 0 ){ //|| order.getArea().compareTo(BigDecimal.valueOf(100)) < 0{
                 //|| order.getDate().isBefore(LocalDate.now())){
             //throw new OrderDAOException("ERROR: All fields [Customer Name, State, Product Type, Area] are required. Area must be greater than 100. Date must be in the future.");
@@ -87,14 +90,38 @@ public class ServiceLayerImpl implements ServiceLayer{
         if (order.getDate() == null || order.getDate().isBefore(LocalDate.now())) {
             throw new OrderDAOException("ERROR: Order date is not set or must be in the future.");
         }
+        if(order.getProductType() == null || order.getState() == null){
+            throw new OrderDAOException("ERROR: Please Enter a Valid State Code or Product");
+
+        }
 
     }
 
     //method to validate date input with the file name
-    
 
+    public List<String> getValidStates() {
+        // Invoke the DAO to get all taxes and then extract the state codes
+        List<TaxDTO> taxList = taxDAO.getAllTaxes();
+        List<String> validStates = new ArrayList<>();
+        for (TaxDTO tax : taxList) {
+            validStates.add(tax.getState());
+        }
+        return validStates;
+    }
+
+    public List<String> getValidProducts() throws ProductDAOException {
+        List<ProductDTO> productList = productDAO.getAllProducts();
+        List<String> validProducts = new ArrayList<>();
+        for (ProductDTO product : productList) {
+            validProducts.add(product.getProductType());
+        }
+        return validProducts;
+    }
     private boolean validateState(String state){
         return taxDAO.getTax(state) != null;
+    }
+    private boolean validateProduct(String productType) throws ProductDAOException {
+        return productDAO.getProduct(productType) != null;
     }
 
     @Override
