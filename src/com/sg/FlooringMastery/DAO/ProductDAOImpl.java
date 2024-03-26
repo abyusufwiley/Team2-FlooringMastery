@@ -43,6 +43,7 @@ public class ProductDAOImpl implements ProductDAO{
         }
 
     }
+    //Converts a line of text from the products file into a ProductDTO object
     private ProductDTO unmarshallProduct(String productAsText){
         String[] productTokens = productAsText.split(DELIMITER);
         String productType = productTokens[0];
@@ -51,12 +52,14 @@ public class ProductDAOImpl implements ProductDAO{
         return new ProductDTO(productType, costPerSquareFoot, laborCostPerSquareFoot);
     }
 
+    //Retrieves all products stored in the products map
     @Override
     public List<ProductDTO> getAllProducts() {
         loadProducts();
         return new ArrayList<>(products.values());
     }
 
+    //Retrieves a product by its type from the products map
     @Override
     public ProductDTO getProduct(String productType) {
         loadProducts();

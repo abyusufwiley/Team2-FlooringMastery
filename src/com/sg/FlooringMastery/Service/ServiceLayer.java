@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 
-public interface ServiceLayer {
+public interface ServiceLayer { // Defines the interface for service operations related to orders
     OrderDTO getOrder(int orderNumber, LocalDate date) throws OrderDAOException;
     List<OrderDTO> getAllOrders() throws OrderDAOException;
     OrderDTO addOrder(OrderDTO order) throws OrderDAOException;

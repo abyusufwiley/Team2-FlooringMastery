@@ -12,20 +12,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Controller {
+public class Controller { // Controller class orchestrates the flow between the view and the service layer.
+
     private View view ;
     private ServiceLayer orderService;
-@Autowired
+@Autowired //Used autowired to inject spring dependecies
     public Controller(View view, ServiceLayer serviceLayer) {
         this.view = view;
         this.orderService = serviceLayer;
     }
 
-    public Controller() {
+    public Controller() { //default constructor for when Spring DI is not used
     }
 
 
-    public void run() throws OrderDAOException {
+    public void run() throws OrderDAOException { // The main loop for user interaction, displays the menu and handles user input
         boolean keepGoing = true;
         int menuSelection = 0;
         while (keepGoing) {
@@ -59,10 +60,11 @@ public class Controller {
         exitMessage();
     }
 
-    private int getMenuSelection() {
+    private int getMenuSelection() { // Retrieves the user's menu selection
         return view.printMenuAndGetSelection();
     }
 
+    // Displays orders from a specific date
     private void displayOrders() throws OrderDAOException {
         view.displayOrdersBanner();
         LocalDate date = view.getDate();
@@ -74,7 +76,8 @@ public class Controller {
         }
     }
 
-    private void addOrder() throws OrderDAOException {
+    private void addOrder() throws OrderDAOException {  // Allows the user to a new order based on dates
+                                                        //Loops if user puts invalid information in order.
         boolean isValid = false;
         while (!isValid) {
             try {
@@ -84,16 +87,17 @@ public class Controller {
                 OrderDTO newOrder = view.getNewOrderInfo(validStates, validProducts);
                 orderService.addOrder(newOrder);
                 view.displayOrderAddedBanner(newOrder);
-                isValid = true; // Exit the loop if the order is successfully added
+                isValid = true;
             } catch (OrderDAOException e) {
-                view.displayErrorMessage(e.getMessage()); // Display the error message and loop again
+                view.displayErrorMessage(e.getMessage());
             }
         }
     }
 
-    private void editOrder() throws OrderDAOException {
+    private void editOrder() throws OrderDAOException {    // Allows the user to edit an existing order
         boolean validOrderFound = false;
         while (!validOrderFound) {
+            //Users must put in valid information
             try {
                 view.editOrderBanner();
                 int orderId = view.getOrderNumber();
@@ -108,7 +112,7 @@ public class Controller {
                 OrderDTO editedOrder = view.editOrderInfo(order, orderService.getValidStates(), orderService.getValidProducts());
                 orderService.editOrder(editedOrder, date);
                 view.displayOrderEditedBanner(editedOrder);
-                validOrderFound = true; // Exit the loop if a valid order is found and edited.
+                validOrderFound = true;
             } catch (Exception e) {
                 view.displayErrorMessage(e.getMessage());
             }
@@ -116,7 +120,7 @@ public class Controller {
     }
 
 
-    private void removeOrder() throws OrderDAOException {
+    private void removeOrder() throws OrderDAOException { // Removes orders from file
         view.removeOrderBanner();
         int orderId = view.getOrderNumber();
         LocalDate date = view.getDate();
@@ -125,20 +129,20 @@ public class Controller {
         view.displayOrdersBanner();
     }
 
-    private void exportAllData() throws OrderDAOException {
+    private void exportAllData() throws OrderDAOException { //Exports all orders into an external file
         view.exportAllDataBanner();
         orderService.exportAllData();
     }
 
-    private void unknownCommand() {
+    private void unknownCommand() { //Displays unknown command message
         view.displayUnknownCommandBanner();
     }
 
-    private void exitMessage() {
+    private void exitMessage() { //Displays exit message
         view.displayExitBanner();
     }
 
-    private void errorMessage(String errorMsg) {
+    private void errorMessage(String errorMsg) { //Displays error message
         view.displayErrorMessage(errorMsg);
     }
 

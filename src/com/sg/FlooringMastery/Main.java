@@ -24,7 +24,6 @@ public class Main {
         View view = new View(myIO);
 
         Controller controller = new Controller(view, serviceLayer);
-        //Controller controller = new Controller();
         controller.run();
 
 

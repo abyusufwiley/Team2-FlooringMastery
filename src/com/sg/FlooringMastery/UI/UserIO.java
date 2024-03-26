@@ -3,7 +3,7 @@ package com.sg.FlooringMastery.UI;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public interface UserIO {
+public interface UserIO { // Defines the interface for user input/output operations
     void print(String msg);
 
     double readDouble(String prompt);

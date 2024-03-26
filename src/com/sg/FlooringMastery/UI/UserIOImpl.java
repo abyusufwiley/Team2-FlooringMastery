@@ -9,14 +9,16 @@ import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 @Component
 public class UserIOImpl implements UserIO{
-    final private Scanner console = new Scanner(System.in);
+    final private Scanner console = new Scanner(System.in); //Scanner object to read input from the user
 
 
     @Override
+    //Prints a message to the console
     public void print(String msg) {
         System.out.println(msg);
     }
     @Override
+    //Reads a double from the console
     public double readDouble(String msgPrompt) {
         while (true) {
             try {
@@ -27,6 +29,7 @@ public class UserIOImpl implements UserIO{
         }
     }
     @Override
+    //Reads a double from the console within a specified range
     public double readDouble(String msgPrompt, double min, double max) {
         double result;
         do {
@@ -35,6 +38,7 @@ public class UserIOImpl implements UserIO{
         return result;
     }
     @Override
+    // Reads a float from the console
     public float readFloat(String msgPrompt) {
         while (true) {
             try {
@@ -45,6 +49,7 @@ public class UserIOImpl implements UserIO{
         }
     }
     @Override
+    // Reads a float from the console within a specified range
     public float readFloat(String msgPrompt, float min, float max) {
         float result;
         do {
@@ -55,7 +60,9 @@ public class UserIOImpl implements UserIO{
     }
 
     @Override
+    // Reads an integer from the console
     public int readInt(String msgPrompt) {
+
         boolean invalidInput = true;
         int num = 0;
         while (invalidInput) {
@@ -74,6 +81,7 @@ public class UserIOImpl implements UserIO{
     }
 
     @Override
+    // Reads an integer from the console within a specified range
     public int readInt(String msgPrompt, int min, int max) {
         int result;
         do {
@@ -84,6 +92,7 @@ public class UserIOImpl implements UserIO{
     }
 
     @Override
+    // Reads a long from the console
     public long readLong(String msgPrompt) {
         while (true) {
             try {
@@ -94,6 +103,7 @@ public class UserIOImpl implements UserIO{
         }
     }
     @Override
+    // Reads a long from the console within a specified range
     public long readLong(String msgPrompt, long min, long max) {
         long result;
         do {
@@ -104,12 +114,14 @@ public class UserIOImpl implements UserIO{
     }
 
     @Override
+    // Reads a string from the console
     public String readString(String msgPrompt) {
         System.out.println(msgPrompt);
         return console.nextLine();
     }
 
     @Override
+    // Reads a BigDecimal from the console
     public BigDecimal readBigDecimal(String Prompt) {
         System.out.println(Prompt);
         while(true){
@@ -122,6 +134,7 @@ public class UserIOImpl implements UserIO{
     }
 
     @Override
+    // Reads a LocalDate from the console
     public LocalDate readLocalDate(String prompt) {
         while (true) {
             try {

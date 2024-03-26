@@ -1,6 +1,7 @@
 package com.sg.FlooringMastery.DAO;
 
-public class OrderDAOException extends Exception{
+public class OrderDAOException extends Exception{ // Custom order exceptions for handling exceptions specific order operations
+
     public OrderDAOException(String message) {
         super(message);
     }

@@ -10,14 +10,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class View {
-    private UserIO io = new UserIOImpl();
+    private UserIO io = new UserIOImpl(); // UserIO object to handle input/output operations
 @Autowired
     public View(UserIO io) {
         this.io = io;
-    }
+    } // Constructor that initializes the UserIO object
 
 
     public int printMenuAndGetSelection() {
+    // Displays the main menu and gets the user's selection
         io.print("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
         io.print("<<Flooring Program>>");
         io.print("1. Display Orders");
@@ -65,6 +66,7 @@ public class View {
     }
 
     public void displayOrders(List<OrderDTO> orders) {
+    // Displays a list of orders by iterating through the list and printing each order
         for (OrderDTO currentOrder : orders) {
             io.print(currentOrder.getOrderNumber() + ": "
                     + currentOrder.getCustomerName() + " "
@@ -83,11 +85,14 @@ public class View {
     }
 
     public OrderDTO getNewOrderInfo(List<String> validStates, List<String> validProducts) {
+        //Gets the information for a new order by getting the order info from users
         int orderNumber = io.readInt("Please enter Order Number");
         LocalDate date = io.readLocalDate("Please enter Date in the format YYYY-MM-DD");
         String customerName = io.readString("Please enter Customer Name");
         String state = "";
         boolean stateValid = false;
+
+        // State Input Validation
         while (!stateValid) {
             state = io.readString("Please enter State:");
             if (validStates.contains(state)) {
@@ -99,6 +104,7 @@ public class View {
 
         String productType = "";
         boolean productValid = false;
+        // Product Type Input Validation
         while (!productValid) {
             productType = io.readString("Please enter Product Type:");
             if (validProducts.contains(productType)) {
@@ -120,7 +126,7 @@ public class View {
         return currentOrder;
     }
     public OrderDTO editOrderInfo(OrderDTO order, List<String> validStates, List<String> validProducts) {
-
+        // Edits an existing order by getting the order informations
         String customerName = io.readString("Please enter Customer Name (" + order.getCustomerName() + "):");
         if (customerName.isEmpty()) {
             order.setCustomerName(order.getCustomerName());
@@ -175,6 +181,7 @@ public class View {
     }
 
     public void displayOrder(OrderDTO order) {
+    //Displays orders
         if (order != null) {
             io.print(order.getOrderNumber() + ": "
                     + order.getCustomerName() + " "

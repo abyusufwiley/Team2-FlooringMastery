@@ -29,13 +29,13 @@ public class OrderDAOImpl implements OrderDAO{
     public OrderDAOImpl(){
     }
 
-    public OrderDAOImpl(String orderTextFile){
+    public OrderDAOImpl(String orderTextFile){   // Constructor allowing for a file path.
         ORDER_FILE = orderTextFile;
     }
 
-    public String buildFilename(LocalDate date){
-        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MMddyyyy");
-        return ORDERS_DIRECTORY + "/Orders_" + date.format(dateFormat) + ".txt";
+    public String buildFilename(LocalDate date){  // Builds filename for an order file based on a given date
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("MMddyyyy"); // Date format for the filename
+        return ORDERS_DIRECTORY + "/Orders_" + date.format(dateFormat) + ".txt"; // Returns the filename
     }
 
 
@@ -44,57 +44,57 @@ public class OrderDAOImpl implements OrderDAO{
     public OrderDTO getOrder(int orderId, LocalDate date) throws OrderDAOException {
         //get order by order id and name
         String orderFile = buildFilename(date);
-        loadOrder(orderFile);
+        loadOrder(orderFile); //Builds the filename and loads the order
         return orders.get(orderId);
     }
 
 
 
-    private void writeOrder(String orderFile) throws OrderDAOException {
-        File file = new File(orderFile);
-        if (!file.exists()) {
+    private void writeOrder(String orderFile) throws OrderDAOException { // Writes the order to the file
+        File file = new File(orderFile); // Creates a new file
+        if (!file.exists()) { // If the file does not exist
             try {
-                file.createNewFile();
+                file.createNewFile(); // Create a new file
             } catch (IOException e) {
-                throw new OrderDAOException("Could not create order file.", e);
+                throw new OrderDAOException("Could not create order file.", e); // Throw an exception if the file cannot be created
             }
         }
 
-        try (PrintWriter out = new PrintWriter(new FileWriter(file))) {
-            for (OrderDTO currentOrder : orders.values()) {
-                String orderAsText = marshallItem(currentOrder);
-                out.println(orderAsText);
-                out.flush();
+        try (PrintWriter out = new PrintWriter(new FileWriter(file))) { // Try to write to the file
+            for (OrderDTO currentOrder : orders.values()) { // For each order in the orders map
+                String orderAsText = marshallItem(currentOrder); // Marshall the order
+                out.println(orderAsText); // Print the order to the file
+                out.flush(); // Flush the output
             }
         } catch (IOException e) {
-            throw new OrderDAOException("Could not save order data.", e);
+            throw new OrderDAOException("Could not save order data.", e); // Throw an exception if the order data cannot be saved
         }
     }
 
-    private void loadOrder(String orderFile) throws OrderDAOException{
-        orders.clear();
-        Scanner scanner;
-        LocalDate fileDate = getDateFromFilename(orderFile);
-        File file = new File(orderFile);
-        if (!file.exists()){
-            return;
+    private void loadOrder(String orderFile) throws OrderDAOException{ // Loads the order from the file
+        orders.clear(); // Clears the orders map
+        Scanner scanner; // Creates a new scanner
+        LocalDate fileDate = getDateFromFilename(orderFile); // Gets the date from the filename
+        File file = new File(orderFile); // Creates a new file
+        if (!file.exists()){ // If the file does not exist
+            return; // Return nothing
         }
 
         try {
-            scanner = new Scanner(new BufferedReader(new FileReader(file)));
+            scanner = new Scanner(new BufferedReader(new FileReader(file))); // Try to read from the file
         } catch (FileNotFoundException e) {
             throw new OrderDAOException(
-                    "-_- Could not load item data into memory.", e);
+                    "-_- Could not load item data into memory.", e); // Throw an exception if the item data cannot be loaded into memory
         }
 
-        String currentLine;
-        OrderDTO currentOrder;
+        String currentLine; // Creates a new string
+        OrderDTO currentOrder; // Creates a new order
 
-        while (scanner.hasNextLine()){
-            currentLine = scanner.nextLine();
-            currentOrder = unmarshallItem(currentLine);
-            currentOrder.setDate(fileDate);
-            orders.put(currentOrder.getOrderNumber(), currentOrder);
+        while (scanner.hasNextLine()){ // While the scanner has a next line
+            currentLine = scanner.nextLine(); // Set the current line to the next line
+            currentOrder = unmarshallItem(currentLine); // Unmarshall the current line
+            currentOrder.setDate(fileDate); // Set the date of the current order
+            orders.put(currentOrder.getOrderNumber(), currentOrder); // Put the current order in the orders map
         }
 
         scanner.close();
@@ -137,34 +137,45 @@ public class OrderDAOImpl implements OrderDAO{
 
         return orderAsText;
     }
-    public LocalDate getDateFromFilename(String filename){
+    public LocalDate getDateFromFilename(String filename){ // Gets the date from the filename
+        // Extract the date part of the filename starting from characters after _ to characters before .txt
         String datePart = filename.substring(filename.lastIndexOf('_') + 1, filename.lastIndexOf('.'));
+        // Parse the date part to LocalDate
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MMddyyyy");
         try {
-            return LocalDate.parse(datePart, dateFormatter);
+            return LocalDate.parse(datePart, dateFormatter); // Return the parsed date
         } catch (DateTimeParseException e) {
-            throw new RuntimeException("Failed to parse the date from filename: " + filename, e);
+            throw new RuntimeException("Failed to parse the date from filename: " + filename, e); // Throw an exception if the date cannot be parsed
         }
     }
 
     public List<OrderDTO> getOrdersByDate(LocalDate date) throws OrderDAOException {
-        String orderFile = buildFilename(date);
-        loadOrder(orderFile);
-        return orders.values().stream()
-                .filter(order -> order.getState().equals(date))
-                .collect(Collectors.toList());
+        String orderFile = buildFilename(date); //Builds the filename
+        loadOrder(orderFile); // Loads the order
+        return orders.values().stream() // Starts a stream of the values in the orders map
+                .filter(order -> order.getState().equals(date)) //Filters the orders by date
+                .collect(Collectors.toList()); //Collects the orders into a list
     }
 
     @Override
     public List<OrderDTO> getAllOrders() throws OrderDAOException {
+        // Build filename for today's date
         String orderFile = buildFilename(LocalDate.now());
-        loadOrder(orderFile);
-        return new ArrayList<>(orders.values());
+        loadOrder(orderFile); //Load orders from the file
+        return new ArrayList<>(orders.values()); // Return a new ArrayList created from the values in the orders map.
+
     }
 
+    /**
+     * Adds a new order to the system, by generating a filename based on the order's date,
+     * clearing any currently loaded orders, loading existing orders from
+     * the specified file, adding the new order to the collection, writing the updated collection back
+     * to the file, and finally returning the added order.
+     */
     @Override
     public OrderDTO addOrder(OrderDTO order) throws OrderDAOException {
         String orderFile = buildFilename(order.getDate());
+
         orders.clear();
         loadOrder(orderFile);
         orders.put(order.getOrderNumber(), order);
@@ -180,7 +191,11 @@ public class OrderDAOImpl implements OrderDAO{
         writeOrder(orderFile);
         return order;
     }
-
+    /**
+     * Removes an order based on its ID and date. After determining the filename from the  date and
+     * loading the relevant orders, the specified order is removed from the collection. The updated collection
+     * is then written back to the file, and it returns it
+     */
     @Override
     public OrderDTO removeOrder(int orderId, LocalDate date) throws OrderDAOException {
         String orderFile = buildFilename(date);
@@ -189,13 +204,18 @@ public class OrderDAOImpl implements OrderDAO{
         writeOrder(orderFile);
         return removedOrder;
     }
-
+    /**
+     * The method below exports all data from the orders directory to a backup file. It first makes sure that the destination
+     * directory exists, then iterates through each file in the orders directory that matches the naming
+     * pattern of order files, reading each line and writing it to the export file. If any step fails,
+     * an appropriate exception is thrown
+     */
     @Override
     public void exportAllData() throws OrderDAOException {
         File srcFolder = new File("./Orders");
         File exportFile = new File("./backup/DataExport.txt");
 
-        exportFile.getParentFile().mkdirs();
+        exportFile.getParentFile().mkdirs(); //mkdirs creates a directory if it does not exist
 
         PrintWriter out = null;
 
@@ -223,6 +243,11 @@ public class OrderDAOImpl implements OrderDAO{
             }
         }
     }
+
+    /**
+     * Ensures the orders directory exists, creating it using mkdir if it doesn't. This makes
+     * sure that there is a directory to read from or write to
+     */
     private void ensureOrdersDirectory() {
         File ordersDir = new File(ORDERS_DIRECTORY);
         if (!ordersDir.exists()) {

@@ -9,21 +9,21 @@ import java.io.FileReader;
 import java.math.BigDecimal;
 import java.util.*;
 @Component
-public class TaxDAOImpl implements TaxDAO{
+public class TaxDAOImpl implements TaxDAO{ // TaxDAOImpl implements TaxDAO
     private final String TAXES_FILE;
     private final String DELIMITER = ",";
     private Map<String, TaxDTO> taxes = new HashMap<>();
 
-    public TaxDAOImpl(){
+    public TaxDAOImpl(){ // Constructor that sets the default value of TAXES_FILE
         TAXES_FILE = "Data/Taxes.txt";
     }
 
     // Constructor
-    public TaxDAOImpl(String taxesTextFile){
+    public TaxDAOImpl(String taxesTextFile){ //Constructor that sets the value of TAXES_FILE to the value of taxesTextFile
         TAXES_FILE = taxesTextFile;
     }
 
-    public void loadTaxes() {
+    public void loadTaxes() { // loadTaxes() reads from the Taxes.txt file and populates the taxes map with the data
         Scanner scanner;
         try {
             scanner = new Scanner(new BufferedReader(new FileReader(TAXES_FILE)));
@@ -38,7 +38,7 @@ public class TaxDAOImpl implements TaxDAO{
 
         }
     }
-    public TaxDTO unmarshallTax(String taxAsText){
+    public TaxDTO unmarshallTax(String taxAsText){ //Converts a line of text from the taxes file into a TaxDTO object
         String[] taxTokens = taxAsText.split(DELIMITER);
         String state = taxTokens[0];
         BigDecimal taxRate = new BigDecimal(taxTokens[2]);
@@ -48,13 +48,13 @@ public class TaxDAOImpl implements TaxDAO{
     }
 
     @Override
-    public List<TaxDTO> getAllTaxes() {
+    public List<TaxDTO> getAllTaxes() { //Retrieves all taxes stored in the taxes map
         loadTaxes();
         return new ArrayList<>(taxes.values());
     }
 
     @Override
-    public TaxDTO getTax(String state) {
+    public TaxDTO getTax(String state) { //Retrieves the tax rate for a given state
         loadTaxes();
         return taxes.get(state);
     }
