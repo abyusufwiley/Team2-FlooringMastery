@@ -150,11 +150,11 @@ public class OrderDAOImpl implements OrderDAO{
     }
 
     public List<OrderDTO> getOrdersByDate(LocalDate date) throws OrderDAOException {
-        String orderFile = buildFilename(date); //Builds the filename
-        loadOrder(orderFile); // Loads the order
-        return orders.values().stream() // Starts a stream of the values in the orders map
-                .filter(order -> order.getState().equals(date)) //Filters the orders by date
-                .collect(Collectors.toList()); //Collects the orders into a list
+        String orderFile = buildFilename(date); // Builds the filename
+        loadOrder(orderFile); // Loads the orders for the specified date
+        return orders.values().stream() // Starts a stream of the order values
+                .filter(order -> order.getDate().equals(date)) // Filters the orders by date
+                .collect(Collectors.toList()); // Collects the filtered orders into a list
     }
 
     @Override

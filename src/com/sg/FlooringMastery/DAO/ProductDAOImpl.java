@@ -32,6 +32,9 @@ public class ProductDAOImpl implements ProductDAO{
         Scanner scanner;
         try {
             scanner = new Scanner(new BufferedReader(new FileReader(PRODUCTS_FILE)));
+            if (scanner.hasNextLine()) {
+                scanner.nextLine();
+            }
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 ProductDTO product = unmarshallProduct(line);
@@ -41,8 +44,9 @@ public class ProductDAOImpl implements ProductDAO{
         } catch (FileNotFoundException e) {
             System.out.println("Could not load products data.");
         }
-
     }
+
+
     //Converts a line of text from the products file into a ProductDTO object
     private ProductDTO unmarshallProduct(String productAsText){
         String[] productTokens = productAsText.split(DELIMITER);

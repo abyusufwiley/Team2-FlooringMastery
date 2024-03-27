@@ -23,10 +23,14 @@ public class TaxDAOImpl implements TaxDAO{ // TaxDAOImpl implements TaxDAO
         TAXES_FILE = taxesTextFile;
     }
 
-    public void loadTaxes() { // loadTaxes() reads from the Taxes.txt file and populates the taxes map with the data
+    //LoadTaxes reads from the Taxes.txt file and populates the taxes map with the data
+    public void loadTaxes() {
         Scanner scanner;
         try {
             scanner = new Scanner(new BufferedReader(new FileReader(TAXES_FILE)));
+            if (scanner.hasNextLine()) {
+                scanner.nextLine();
+            }
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 TaxDTO tax = unmarshallTax(line);
@@ -35,9 +39,9 @@ public class TaxDAOImpl implements TaxDAO{ // TaxDAOImpl implements TaxDAO
             scanner.close();
         } catch (FileNotFoundException e) {
             System.out.println("Could not load taxes data.");
-
         }
     }
+
     public TaxDTO unmarshallTax(String taxAsText){ //Converts a line of text from the taxes file into a TaxDTO object
         String[] taxTokens = taxAsText.split(DELIMITER);
         String state = taxTokens[0];
